@@ -1,0 +1,91 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define N 100
+
+// Structure for bucket
+struct Bucket {
+    int count;
+    float values[N];
+};
+
+// Insertion Sort for each bucket
+void insertionSort(float arr[], int n) {
+    int i, j;
+    float key;
+
+    for (i = 1; i < n; i++) {
+        key = arr[i];
+        j = i - 1;
+
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+
+        arr[j + 1] = key;
+    }
+}
+
+// Bucket Sort function
+void bucketSort(float arr[], int n) {
+    struct Bucket buckets[N];
+
+    // Initialize buckets
+    for (int i = 0; i < n; i++) {
+        buckets[i].count = 0;
+    }
+
+    // Put array elements into buckets
+    for (int i = 0; i < n; i++) {
+        int index = n * arr[i];
+        buckets[index].values[buckets[index].count++] = arr[i];
+    }
+
+    // Sort individual buckets
+    for (int i = 0; i < n; i++) {
+        insertionSort(buckets[i].values, buckets[i].count);
+    }
+
+    // Concatenate all buckets into arr[]
+    int k = 0;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < buckets[i].count; j++) {
+            arr[k++] = buckets[i].values[j];
+        }
+    }
+}
+
+// Print array
+void printArray(float arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("%.3f ", arr[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    int n;
+
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+
+    float arr[N];
+
+    printf("Enter %d numbers in range [0,1):\n", n);
+
+    for (int i = 0; i < n; i++) {
+        scanf("%f", &arr[i]);
+    }
+
+    printf("\nBefore Sorting:\n");
+    printArray(arr, n);
+
+    bucketSort(arr, n);
+
+    printf("\nAfter Sorting:\n");
+    printArray(arr, n);
+
+    return 0;
+}
